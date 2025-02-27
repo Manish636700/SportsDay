@@ -29,6 +29,7 @@ function Race100M(callback, scores) {
         raceResults.sort((a, b) => a.time - b.time);
 
         console.log("Race Results:", raceResults);
+        console.log("Previous Scores:", { ...scores });
 
         scores[raceResults[0].color] += 50;
         scores[raceResults[1].color] += 25;
@@ -45,6 +46,8 @@ function LongJump(callback, scores) {
     setTimeout(() => {
         let colors = Object.keys(scores);
         let selectedColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        console.log("Previous Scores:", { ...scores });
         scores[selectedColor] += 150;
         
         console.log(`${selectedColor} team performed best in Long Jump!`);
@@ -58,6 +61,7 @@ function LongJump(callback, scores) {
 function HighJump(callback, scores) {
     console.log("Starting High Jump...");
     setTimeout(() => {
+        console.log("Previous Scores:", { ...scores });
         let userInput = prompt("Enter the color that performed best in High Jump (red, blue, green, yellow):");
         if (userInput && scores.hasOwnProperty(userInput)) {
             scores[userInput] += 100;
