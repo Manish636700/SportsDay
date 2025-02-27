@@ -1,99 +1,68 @@
 
-let scores = {
-    red: 0,
-    blue: 0,
-    green: 0,
-    yellow: 0
-};
-
-
-function updateUI(message) {
-    let eventLog = document.getElementById("event-log");
-    let logEntry = document.createElement("p");
-    logEntry.textContent = message;
-    eventLog.appendChild(logEntry);
-}
-
+const scores = { Red: 0, Blue: 0, Green: 0, Yellow: 0 };
 
 function OpeningCeremony(callback) {
-    updateUI("Welcome to the Sports Event!");
+    console.log("Opening Ceremony Begins!");
     let count = 3;
-    let interval = setInterval(() => {
-        updateUI(`Starting in ${count}...`);
+    const interval = setInterval(() => {
+        console.log(`Starting in ${count}...`);
         count--;
         if (count === 0) {
             clearInterval(interval);
-            updateUI("Let the games begin!");
+            console.log("Let the games begin! Current Scores:", scores);
             setTimeout(() => callback(Race100M, scores), 1000);
         }
     }, 1000);
 }
 
-
 function Race100M(callback, scores) {
-    updateUI("Starting the 100m Race...");
+    console.log("\nStarting 100M Race...");
     setTimeout(() => {
-        let raceResults = Object.keys(scores).map(color => ({ color, time: (Math.random() * 3 + 10).toFixed(2) }));
-        raceResults.sort((a, b) => a.time - b.time);
-
-        updateUI("Race Results: " + JSON.stringify(raceResults));
-        updateUI("Previous Scores: " + JSON.stringify(scores));
-
-        scores[raceResults[0].color] += 50;
-        scores[raceResults[1].color] += 25;
-        
-        updateUI("Updated Scores: " + JSON.stringify(scores));
-        
-        setTimeout(() => callback(LongJump, scores), 2000);
+        let times = {};
+        for (let color in scores) {
+            times[color] = (Math.random() * 5 + 10).toFixed(2); 
+        }
+        let sorted = Object.entries(times).sort((a, b) => a[1] - b[1]);
+        scores[sorted[0][0]] += 50; 
+        scores[sorted[1][0]] += 25; 
+        console.log("Race finished! Updated Scores:", scores);
+        setTimeout(() => callback(LongJump, scores), 3000);
     }, 3000);
 }
 
-
 function LongJump(callback, scores) {
-    updateUI("Starting Long Jump...");
+    console.log("\nStarting Long Jump...");
     setTimeout(() => {
         let colors = Object.keys(scores);
-        let selectedColor = colors[Math.floor(Math.random() * colors.length)];
-        
-        updateUI("Previous Scores: " + JSON.stringify(scores));
-        scores[selectedColor] += 150;
-        
-        updateUI(`${selectedColor} team performed best in Long Jump!`);
-        updateUI("Updated Scores: " + JSON.stringify(scores));
-        
+        let winner = colors[Math.floor(Math.random() * colors.length)];
+        scores[winner] += 30;
+        console.log(`${winner} won the Long Jump! Updated Scores:`, scores);
         setTimeout(() => callback(HighJump, scores), 2000);
     }, 2000);
 }
 
-
 function HighJump(callback, scores) {
-    updateUI("Starting High Jump...");
+    console.log("\nStarting High Jump...");
+    let userInput = prompt("Which color achieved the highest jump? (Red, Blue, Green, Yellow)");
     setTimeout(() => {
-        updateUI("Previous Scores: " + JSON.stringify(scores));
-        let userInput = prompt("Enter the color that performed best in High Jump (red, blue, green, yellow):");
         if (userInput && scores.hasOwnProperty(userInput)) {
-            scores[userInput] += 100;
+            scores[userInput] += 20;
         } else {
-            updateUI("Invalid input or no points awarded.");
+            console.log("Invalid input. No points awarded.");
         }
-        
-        updateUI("Updated Scores: " + JSON.stringify(scores));
-        
-        setTimeout(() => callback(AwardCeremony, scores), 1000);
-    }, 1000);
+        console.log("High Jump completed! Updated Scores:", scores);
+        setTimeout(() => callback(AwardCeremony, scores), 1500);
+    }, 1500);
 }
-
 
 function AwardCeremony(scores) {
-    updateUI("Final Scores: " + JSON.stringify(scores));
+    console.log("\nAward Ceremony Begins!");
     let sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-    updateUI(`1st Place: ${sortedScores[0][0]} team with ${sortedScores[0][1]} points!`);
-    updateUI(`2nd Place: ${sortedScores[1][0]} team with ${sortedScores[1][1]} points!`);
-    updateUI(`3rd Place: ${sortedScores[2][0]} team with ${sortedScores[2][1]} points!`);
+    console.log("Final Standings:");
+    sortedScores.forEach(([color, score], index) => {
+        console.log(`${index + 1}. ${color} - ${score} points`);
+    });
 }
-
-
-document.body.innerHTML = "<h1>Sports Event</h1><div id='event-log'></div>";
 
 
 OpeningCeremony(Race100M);
