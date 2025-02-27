@@ -1,10 +1,11 @@
 
-let scores={
+let scores = {
     red: 0,
     blue: 0,
     green: 0,
     yellow: 0
-}
+};
+
 
 function OpeningCeremony(callback) {
     console.log("Welcome to the Sports Event!");
@@ -15,29 +16,31 @@ function OpeningCeremony(callback) {
         if (count === 0) {
             clearInterval(interval);
             console.log("Let the games begin!");
-            setTimeout(() => callback(Race100M), 1000);
+            setTimeout(() => callback(Race100M, scores), 1000);
         }
     }, 1000);
 }
 
 
-function Race100M(callback) {
+function Race100M(callback, scores) {
     console.log("Starting the 100m Race...");
     setTimeout(() => {
-        let raceResults = Object.keys(scores).map(color => ({ color, time: Math.random() * 3 + 10 }));
+        let raceResults = Object.keys(scores).map(color => ({ color, time: (Math.random() * 3 + 10).toFixed(2) }));
         raceResults.sort((a, b) => a.time - b.time);
+
+        console.log("Race Results:", raceResults);
 
         scores[raceResults[0].color] += 50;
         scores[raceResults[1].color] += 25;
         
-        console.log("Race Results:", raceResults);
         console.log("Updated Scores:", scores);
         
-        setTimeout(() => callback(LongJump), 2000);
+        setTimeout(() => callback(LongJump, scores), 2000);
     }, 3000);
 }
 
-function LongJump(callback) {
+
+function LongJump(callback, scores) {
     console.log("Starting Long Jump...");
     setTimeout(() => {
         let colors = Object.keys(scores);
@@ -47,12 +50,12 @@ function LongJump(callback) {
         console.log(`${selectedColor} team performed best in Long Jump!`);
         console.log("Updated Scores:", scores);
         
-        setTimeout(() => callback(HighJump), 2000);
+        setTimeout(() => callback(HighJump, scores), 2000);
     }, 2000);
 }
 
 
-function HighJump(callback) {
+function HighJump(callback, scores) {
     console.log("Starting High Jump...");
     setTimeout(() => {
         let userInput = prompt("Enter the color that performed best in High Jump (red, blue, green, yellow):");
@@ -64,12 +67,12 @@ function HighJump(callback) {
         
         console.log("Updated Scores:", scores);
         
-        setTimeout(() => callback(AwardCeremony), 1000);
+        setTimeout(() => callback(AwardCeremony, scores), 1000);
     }, 1000);
 }
 
 
-function AwardCeremony() {
+function AwardCeremony(scores) {
     console.log("Final Scores:", scores);
     let sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
     console.log(`1st Place: ${sortedScores[0][0]} team with ${sortedScores[0][1]} points!`);
